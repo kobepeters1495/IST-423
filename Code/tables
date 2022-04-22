@@ -1,0 +1,81 @@
+CREATE TABLE locations (
+	LocID varchar(5) PRIMARY KEY,
+	LocType varchar(30),
+	Street varchar(100),
+	City varchar(50),
+	State varchar(50),
+	Zip numeric
+);
+
+COPY locations
+FROM 'C:\Users\Public\Documents\practicebooks\location.csv'
+WITH (FORMAT CSV, HEADER);
+
+CREATE TABLE employees (
+	id varchar(10) PRIMARY KEY,
+	first_name varchar(30),
+	last_name varchar(35),
+	street varchar(100),
+	City varchar(50),
+	State varchar(50),
+	Zip numeric,
+	SSN varchar(12),
+	email varchar(50),
+	phone varchar(15),
+	gender varchar(25),
+	position varchar(35),
+	salary money,
+	location varchar(5) REFERENCES locations (LocID)
+);
+
+CREATE TABLE pointofsale (
+	pos varchar(9) PRIMARY KEY,
+	location varchar(5) REFERENCES locations (LocID)
+);
+
+CREATE TABLE books (
+	product_number varchar(20) PRIMARY KEY,
+	title varchar(150),
+	author1 varchar(75),
+	author2 varchar(75),
+	isbn13 char(13),
+	isbn10 char(10),
+	publisher varchar(75),
+	year integer,
+	binding varchar(50),
+	srp money,
+	pages integer,
+	category varchar(35),
+	audience varchar(20)
+);
+
+CREATE TABLE purchase_list (
+	list_id varchar(9),
+	line_number integer,
+	sku varchar(20) REFERENCES books (sku),
+	title varchar(150),
+	unit_price money,
+	quantity integer
+);
+
+CREATE TABLE customer (
+	customer_id varchar(10) PRIMARY KEY,
+	membership varchar(10),
+	lname varchar(40),
+	fname varchar(40),
+	phone varchar(15),
+	email varchar(50)
+);
+
+CREATE TABLE transaction (
+	transaction_id integer PRIMARY KEY,
+	datetime timestamp,
+	customer varchar(10) REFERENCES customer (customer_id),
+	pay_type varchar(10),
+	card_no varchar(20),
+	list_id varchar(9) REFERENCES purchase_list,
+	total money,
+	cashier varchar(10) REFERENCES employees (id),
+	pos varchar(9) REFERENCES pointofsale (pos),
+	location varchar(5) REFERENCES locations (LocID)
+);
