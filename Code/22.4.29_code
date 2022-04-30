@@ -126,4 +126,27 @@ COPY transaction
 FROM 'C:\Users\Public\Documents\bbbooks\transaction.csv'
 WITH (FORMAT CSV, HEADER);
 
+-- Sales views by store
+
+CREATE OR REPLACE VIEW b001transactions AS
+SELECT * FROM transaction WHERE location = 'B001';
+
+CREATE OR REPLACE VIEW b002transactions AS
+SELECT * FROM transaction WHERE location = 'B002';
+
+CREATE OR REPLACE VIEW b003transactions AS
+SELECT * FROM transaction WHERE location = 'B003';
+
+CREATE OR REPLACE VIEW b004transactions AS
+SELECT * FROM transaction WHERE location = 'B004';
+
+CREATE OR REPLACE VIEW c001transactions AS
+SELECT * FROM transaction WHERE location = 'C001';
+
+CREATE OR REPLACE VIEW c001transactions AS
+SELECT * FROM transaction WHERE location = 'W001';
+
+CREATE OR REPLACE VIEW c001transactions AS
+SELECT * FROM transaction WHERE location = 'W002';
+
 SELECT * FROM transaction
