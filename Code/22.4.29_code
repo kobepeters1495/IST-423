@@ -111,6 +111,7 @@ WITH (FORMAT CSV, HEADER);
 
 CREATE TABLE transaction (
 	transaction_id integer,
+	location varchar(5) REFERENCES locations(locID),
 	datetime timestamp,
 	list_id varchar(9) REFERENCES purchaseid (list_id),
 	customer varchar(10) REFERENCES customer (customer_id),
