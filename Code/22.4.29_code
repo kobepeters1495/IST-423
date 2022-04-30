@@ -1,0 +1,128 @@
+CREATE TABLE books (
+	product_number varchar(20) PRIMARY KEY,
+	title varchar(150),
+	author1 varchar(75),
+	author2 varchar(75),
+	publisher varchar(75),
+	year integer,
+	binding varchar(50),
+	srp decimal,
+	pages integer,
+	category varchar(50),
+	audience varchar(20)
+);
+
+COPY books
+FROM 'C:\Users\Public\Documents\bbbooks\books3.csv'
+WITH (FORMAT CSV, HEADER);
+
+CREATE TABLE locations (
+	locID varchar(5) PRIMARY KEY,
+	locType varchar(30),
+	street varchar(100),
+	city varchar(50),
+	state varchar(50),
+	zip numeric
+);
+
+COPY locations
+FROM 'C:\Users\Public\Documents\bbbooks\location.csv'
+WITH (FORMAT CSV, HEADER);
+
+CREATE TABLE pos (
+	pos_id varchar(8),
+	location varchar(5) REFERENCES locations (locID),
+	number integer,
+	CONSTRAINT pos_pkey PRIMARY KEY (pos_id)
+);
+
+COPY pos
+FROM 'C:\Users\Public\Documents\bbbooks\pos2.csv'
+WITH (FORMAT CSV, HEADER);
+
+CREATE TABLE employee (
+	id varchar(5),
+	first_name varchar(30),
+	last_name varchar(35),
+	street varchar(100),
+	city varchar(50),
+	state varchar(50),
+	zip numeric,
+	ssn varchar(12),
+	email varchar(50),
+	phone varchar(15),
+	gender varchar(25),
+	position varchar(35),
+	salary numeric,
+	location varchar(5) REFERENCES locations (locID),
+    CONSTRAINT emp_key PRIMARY KEY (id)
+);
+
+COPY employee
+FROM 'C:\Users\Public\Documents\bbbooks\employee.csv'
+WITH (FORMAT CSV, HEADER);
+
+CREATE TABLE customer (
+	customer_id varchar(10) PRIMARY KEY,
+	membership varchar(10),
+	lname varchar(40),
+	fname varchar(40),
+	phone varchar(15),
+	email varchar(50)
+);
+
+COPY customer
+FROM 'C:\Users\Public\Documents\bbbooks\customer.csv'
+WITH (FORMAT CSV, HEADER);
+
+CREATE TABLE purchaseid (
+	list_id varchar(9)
+);
+
+COPY purchaseid
+FROM 'C:\Users\Public\Documents\bbbooks\purchaseid.csv'
+WITH (FORMAT CSV, HEADER);
+
+CREATE TABLE purchase_list (
+	list_id varchar(9) REFERENCES purchaseid (list_id),
+	line_number integer,
+	sku varchar(20) REFERENCES books (product_number),
+	title varchar(150),
+	unit_price money,
+	quantity integer,
+	subtotal money,
+	CONSTRAINT list_composite_pkey PRIMARY KEY (list_id, line_number)
+);
+
+COPY purchase_list
+FROM 'C:\Users\Public\Documents\bbbooks\purchase_list.csv'
+WITH (FORMAT CSV, HEADER);
+
+CREATE TABLE inventory (
+	product_id varchar(20) REFERENCES books (product_number),
+	title varchar(150),
+	quantity integer,
+	location varchar(5) REFERENCES locations (locID)
+);
+
+COPY inventory
+FROM 'C:\Users\Public\Documents\bbbooks\inventory.csv'
+WITH (FORMAT CSV, HEADER);
+
+CREATE TABLE transaction (
+	transaction_id integer,
+	datetime timestamp,
+	list_id varchar(9) REFERENCES purchaseid (list_id),
+	customer varchar(10) REFERENCES customer (customer_id),
+	pay_type varchar(10),
+	card_no varchar(20),
+	cashier varchar(10) REFERENCES employee (id),
+	pos varchar(8) REFERENCES pos (pos_id),
+	CONSTRAINT transaction_pkey PRIMARY KEY (transaction_id)
+);
+
+COPY transaction
+FROM 'C:\Users\Public\Documents\bbbooks\transaction.csv'
+WITH (FORMAT CSV, HEADER);
+
+SELECT * FROM transaction
